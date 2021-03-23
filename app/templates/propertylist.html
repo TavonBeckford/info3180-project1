@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block main %}
+        <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <h1>Properties</h1>
+        {% for user in users %}
+        <div class="cards">
+            <div class="card" style="width: 20rem; height: 30rem;">
+                <img src="{{ url_for('static', filename="uploads/"+user.photo) }}" class="card-img-top" alt="Card image cap">
+                  <div class="card-body">
+                      <p class="card-text" id= "property"> {{user.propertytitle}} </p>
+                      <p class="card-text" id ="descrip"><i class="fa fa-map-marker" style="color: grey"></i> {{user.location}} </p>
+                      <p class="card-text" id="propprice">{{user.price}} </p>
+                  </div>
+                  <div class="panel-footer">
+                  <button type="button" class="btn btn-primary" id="buttn" name="view" onclick="window.location.href='{{ url_for( 'propertyId' , userid=user.id ) }}';">View Property</button>
+                  </div>
+            </div>
+        </div>
+        {% endfor %}
+{% endblock %}

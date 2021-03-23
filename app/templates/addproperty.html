@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block main %}
+{% include 'flash_messages.html' %}
+<h1 class="page-header">Add New Property</h1>
+<div class="wrapper">
+    <form action="{{ url_for('addProperty')}}" method="post" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <div class="form-group1">
+            {{ form.propertytitle.label('Property Title') }}
+            {{ form.propertytitle(class='form-control') }}
+        </div>
+        <div class="form-group2">
+            {{ form.description.label('Description') }}
+            {{ form.description(class='form-control') }}
+        </div>
+        <div class="form-group3">
+            {{ form.noofrooms.label('No. of Rooms') }}
+            {{ form.noofrooms(class='form-control', placeholder='3') }}
+        </div>
+        <div class="form-group4">
+            {{ form.noofbathrooms.label('No. of Bathrooms') }}
+            {{ form.noofbathrooms(class='form-control', placeholder='2') }}
+        </div>
+        <div class="form-group5">
+            {{ form.price.label('Price') }}
+            {{ form.price(class='form-control', placeholder='15,000,000') }}
+        </div>
+        <div class="form-group6">
+            {{ form.propertytype.label('Property Type') }}
+            {{ form.propertytype(class='form-control') }}
+        </div>
+        <div class="form-group7">
+            {{ form.location.label('Location') }}
+            {{ form.location(class='form-control', placeholder='10 Waterloo Rd') }}
+        </div>
+        <div class="form-group8">
+            {{ form.property_picture.label('Photo') }}
+            {{ form.property_picture(class='form-control') }}
+        </div>
+        <div class="f-group">
+            {{form.submit}}
+        </div>
+    </form>
+</div>
+{% endblock %}

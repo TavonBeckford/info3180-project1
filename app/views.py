@@ -4,9 +4,12 @@ Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
-
-from app import app
-from flask import render_template, request, redirect, url_for
+import os
+from app import app, db
+from flask import render_template, request, redirect, url_for, flash
+from werkzeug.utils import secure_filename
+from app.forms import UserForm
+from app.models import UserProfile
 
 
 ###
@@ -22,7 +25,53 @@ def home():
 @app.route('/about/')
 def about():
     """Render the website's about page."""
-    return render_template('about.html', name="Mary Jane")
+    return render_template('about.html', name="Michael Beckford")
+
+@app.route('/property', methods=['GET','POST'])
+def addProperty():
+    form= UserForm()
+    if request.method == "POST":
+        if form.validate_on_submit() == True:
+            #Gets the user input from the form
+            proptitle = form.propertytitle.data
+            description = form.description.data
+            noofrooms = form.noofrooms.data
+            noofbathrooms = form.noofbathrooms.data
+            price = form.price.data
+            proptype = form.propertytype.data
+            location = form.location.data
+            filename = uploadPhoto(form.property_picture.data)
+
+            #create user object and add to database
+            user = UserProfile(proptitle,description,noofrooms,noofbathrooms,price,proptype, location, filename)
+            db.session.add(user)
+            db.session.commit()
+
+             # remember to flash a message to the user
+            flash('Property information uploaded successfully.', 'success')
+        else:
+            flash('Property information not uploaded', 'danger')
+        return redirect(url_for("properties"))  # they should be redirected to a secure-page route instead
+    return render_template("addproperty.html", form=form)
+
+
+
+#Save the uploaded photo to a folder
+def uploadPhoto(upload):
+    filename = secure_filename(upload.filename)
+    upload.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    return filename
+
+
+@app.route("/properties")
+def properties():
+    user_profiles = db.session.query(UserProfile).all()
+    return render_template("propertylist.html", users=user_profiles)
+
+@app.route("/property/<userid>")
+def propertyId(userid):
+    user = db.session.query(UserProfile).filter_by(id=int(userid)).first()
+    return render_template("individual.html", user=user)
 
 
 ###
